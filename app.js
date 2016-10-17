@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var lessMiddleware = require('less-middleware'); //less实时编译
 var routes = require('./routes/index');
 //var users = require('./routes/users');
 var settings = require('./settings');
@@ -16,7 +16,11 @@ var MongoStore = require('connect-mongo')(session);
 var MongoStore = require('connect-mongo')(session);*/
 
 var app = express();
-
+app.use(lessMiddleware(path.join(__dirname + '/public/less'), {
+  dest:path.join(__dirname + '/public/stylesheets'),
+  force:true,
+  debug: true
+}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -27,9 +31,11 @@ app.engine('.html', require('ejs').__express);*/
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))); //****设置/public/favicon.ico为favicon图标
-app.use(logger('dev'));// ****加载日志中间件。
+app.use(logger('dev')); // ****加载日志中间件。
 app.use(bodyParser.json()); //****加载解析json的中间件
-app.use(bodyParser.urlencoded({ extended: false })); // ***加载解析urlencoded请求体的中间件
+app.use(bodyParser.urlencoded({
+  extended: false
+})); // ***加载解析urlencoded请求体的中间件
 app.use(cookieParser()); //****加载解析cookie的中间件。
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -47,10 +53,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 }));*/
 app.use(session({
   secret: settings.cookieSecret,
-  resave:true,
+  resave: true,
   saveUninitialized: true,
-  key: settings.db,//cookie name
-  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+  key: settings.db, //cookie name
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 30
+  }, //30 days
   store: new MongoStore({
     db: settings.db,
     host: settings.host,
