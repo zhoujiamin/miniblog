@@ -7,16 +7,23 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 //var users = require('./routes/users');
+var settings = require('./settings');
+
+//会话相关：
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+/*var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);*/
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-/*app.set('view engine', 'ejs');
-*/
+app.set('view engine', 'ejs');
+
 //修改为html为后缀
-app.set('view engine', 'html');
-app.engine('.html', require('ejs').__express);
+/*app.set('view engine', 'html');
+app.engine('.html', require('ejs').__express);*/
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))); //****设置/public/favicon.ico为favicon图标
@@ -26,6 +33,30 @@ app.use(bodyParser.urlencoded({ extended: false })); // ***加载解析urlencode
 app.use(cookieParser()); //****加载解析cookie的中间件。
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+//会话相关
+/*app.use(session({
+  secret: settings.cookieSecret,
+  key: settings.db,//cookie name
+  resave:true,
+  saveUninitialized: true,
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+  store: new MongoStore({
+    url: 'mongodb://localhost/miniblog'
+  })
+}));*/
+app.use(session({
+  secret: settings.cookieSecret,
+  resave:true,
+  saveUninitialized: true,
+  key: settings.db,//cookie name
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+  store: new MongoStore({
+    db: settings.db,
+    host: settings.host,
+    port: settings.port
+  })
+}));
 /*app.use('/', routes);
 app.use('/users', users);*/
 
