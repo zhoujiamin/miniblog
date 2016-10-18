@@ -8,6 +8,7 @@ var lessMiddleware = require('less-middleware'); //less实时编译
 var routes = require('./routes/index');
 //var users = require('./routes/users');
 var settings = require('./settings');
+var flash = require('connect-flash');
 
 //会话相关：
 var session = require('express-session');
@@ -16,10 +17,9 @@ var MongoStore = require('connect-mongo')(session);
 var MongoStore = require('connect-mongo')(session);*/
 
 var app = express();
-app.use(lessMiddleware(path.join(__dirname + '/public/less'), {
-  dest:path.join(__dirname + '/public/stylesheets'),
-  force:true,
-  debug: true
+app.use(lessMiddleware('/less', {
+  dest: '/stylesheets',
+  pathRoot: path.join(__dirname, 'public')
 }));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,7 +28,7 @@ app.set('view engine', 'ejs');
 //修改为html为后缀
 /*app.set('view engine', 'html');
 app.engine('.html', require('ejs').__express);*/
-
+app.use(flash());
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))); //****设置/public/favicon.ico为favicon图标
 app.use(logger('dev')); // ****加载日志中间件。

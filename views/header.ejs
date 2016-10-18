@@ -4,18 +4,25 @@
 <meta charset="UTF-8" />
 <title>Blog</title>
 <link rel="stylesheet" href="/stylesheets/bootstrap.css">
-<link rel="stylesheet" href="/stylesheets/try.css">
+<link rel="stylesheet" href="/stylesheets/index.css">
 </head>
 <body>
 
 <header>
-<h1><%= title %></h1>
-</header>
 
+</header>
+<%- include navbar %>
+<h1><%= title %></h1>
 <nav>
-<span><a title="主页" href="/">home</a></span>
-<span><a title="登录" href="/login">login</a></span>
-<span><a title="注册" href="/reg">register</a></span>
 </nav>
 
 <article>
+ <% if (success) { %>
+ <div><%= success %></div>
+<% } %>
+<% if (error) { %>
+ <div><%= error %> </div>
+<% } %> 
+<% if (user) { %>
+<h1>hello <%= user.name %></h1> 
+<% } %>
